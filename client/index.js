@@ -5,7 +5,6 @@ angular.module('day-trader', ['firebase'])
   $rootScope.fbRoot = new $window.Firebase('https://daytrippin.firebaseio.com/');
 }])
 .controller('master', ['$scope', '$firebaseObject', '$firebaseArray', '$http', function($scope, $firebaseObject, $firebaseArray, $http){
-  $scope.buffalos = [{'name':'buf1'}, {'name':'buf2'}];
   var fbUser = $scope.fbRoot.child('user');
   var afUser = $firebaseObject(fbUser);
   $scope.user = afUser;
@@ -16,7 +15,6 @@ angular.module('day-trader', ['firebase'])
   
   $scope.addUser = function(){
     $scope.user.$save();
-    console.log($scope.user);
     $scope.swapBar();
   };
   $scope.swapBar = function(){
@@ -24,16 +22,30 @@ angular.module('day-trader', ['firebase'])
   };
   $scope.addPortfolio = function(){
     $scope.portfolios.$add($scope.portfolio);
-    // $scope.portfolio.name.$save();
-    
   };
-  $scope.buyShares = function(){
-    var symbol = $scope.portfolio.stock.symbol;
+  $scope.buyShares = function(index){
+
+    //var symbol = $scope.portfolio.stock.symbol;
     var shares = $scope.portfolio.stock.amount;
-    $http.jsonp('http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol='+ symbol +'&callback=JSON_CALLBACK').then(function(response){
+
+    $http.jsonp('http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol='+ $scope.portfolio.stock.symbol +'&callback=JSON_CALLBACK').then(function(response){
+    //console.log(response.data.LastPrice);
+        
+        
       if((response.data.LastPrice * shares) < $scope.user.capital){
         $scope.user.capital -= (response.data.LastPrice * shares);
-        console.log($scope.user.capital);
+        
+        $scope.stock = {};
+        //$scope.stock.name = index;
+        $scope.portfolio.stock.shares = shares;
+        //$scope.portfolio.stock.symbol = symbol;
+        $scope.portfolio.stock.price = response.data.LastPrice;
+        $scope.portfolio.stock.position= (response.data.LastPrice * shares);
+        console.log($scope.stock);
+        $scope.portfolios.$add($scope.stock);
+        //$scope.portfolios['0'].$add(stock.price);
+        //$scope.portfolio.name.$add($scope.stock.symbol);
+        //console.log(shares);
       }else{
         alert('Not Enough Funds');
       }

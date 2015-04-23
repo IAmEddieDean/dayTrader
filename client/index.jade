@@ -2,7 +2,7 @@ doctype html
 html(lang='en', ng-app='day-trader')
   head
     meta(charset='utf-8')
-    meta(meta http-equiv='X-UA-Compatible' content="IE=edg)
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     title Day Trader
     link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootswatch/3.3.4/slate/bootstrap.min.css')
@@ -38,24 +38,20 @@ html(lang='en', ng-app='day-trader')
                   button.btn.btn-default(type='submit', ng-click='addPortfolio()') Add Portfolio
                   input.form-control(type='text', placeholder='Symbol', ng-model='portfolio.stock.symbol')
                   input.form-control(type='number', ng-model='portfolio.stock.amount')
-                  button.btn.btn-default(type='submit', ng-click='buyShares()')  Buy Shares
+                  
+                  //button.btn.btn-default(type='submit', ng-click='buyShares()')  Buy Shares
               
-              ul.nav.navbar-nav
-                li.dropdown
-                  a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false') Your Portfolios 
-                    ul.dropdown-menu(role='menu', aria-labelledby="dLabel")
-                      li: a(href='#') Buff1
-                      li: a(href='#') Buff1
-                      li: a(href='#') Buff1
-                      li: a(href='#') Buff1
-                      li: a(href='#') Buff1
-                      li: a(href='#') Buff1
-                      li: a(href='#') Buff1
+                  ul.nav.navbar-nav.navbar-right
+                    li.dropdown
+                      a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false') Your Portfolios 
+                        ul.dropdown-menu(role='menu')
+                            li( ng-repeat='portfolio in portfolios track by $index'): a(href='#', ng-click='buyShares($index)') {{portfolio.name}}
+                            
                       
                       //- li(ng-repeat='buffalo in buffalos track by $index') {{buffalo.name}}
-              ul.nav.navbar-nav.navbar-right
-                li
-                  a(href='#', ng-click='swapBar()') Log Out
+                //- ul.nav.navbar-nav.navbar-right
+                //-   li
+                //-     a(href='#', ng-click='swapBar()') Log Out
       .row
         .col-md-4
           
