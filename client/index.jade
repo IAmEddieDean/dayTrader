@@ -38,26 +38,30 @@ html(lang='en', ng-app='day-trader')
                   button.btn.btn-default(type='submit', ng-click='addPortfolio()') Add Portfolio
                   input.form-control(type='text', placeholder='Symbol', ng-model='portfolio.stock.symbol')
                   input.form-control(type='number', ng-model='portfolio.stock.amount')
-                  
-                  //button.btn.btn-default(type='submit', ng-click='buyShares()')  Buy Shares
-              
+
                   ul.nav.navbar-nav.navbar-right
-                    li.dropdown
-                      a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false') Your Portfolios 
-                        ul.dropdown-menu(role='menu')
-                            li( ng-repeat='portfolio in portfolios track by $index'): a(href='#', ng-click='buyShares($index)') {{portfolio.name}}
-                            
-                      
-                      //- li(ng-repeat='buffalo in buffalos track by $index') {{buffalo.name}}
-                //- ul.nav.navbar-nav.navbar-right
-                //-   li
-                //-     a(href='#', ng-click='swapBar()') Log Out
+                    .form-group
+                      label(for="pickPort") Pick Portfolio
+                      select#pickPort.form-control(ng-model="stock.portfolio")
+                        option(value='{{portfolio}}', ng-repeat='portfolio in portfolios') {{portfolio.name}}
+                        option(value="technology") Technology
+                        option(value="cereal") Cereal
+                        option(value="pharma") Pharmaceuticals
+                      button.btn.btn-default(type='submit', ng-click='buyShares()') Buy
       .row
-        .col-md-4
-          
-          
-          
-          
+        .col-md-4(ng-repeat='portfolio in portfolios')
+          table.table.table-striped
+            thead
+              th Symbol
+              th Position
+              th Qty:
+              th Sell
+            tbody
+              tr(ng-repeat='stock in portfolio')
+                td {{stock.symbol}}
+                td {{stock.value}}
+                td {{stock.shares}}
+                td: button.btn.btn-danger.btn-xs(ng-click='sellShares(stock, {{portfolio.name}})') Sell
     script(src='/vendor/jquery/dist/jquery.min.js')
     script(src='/vendor/bootstrap/dist/js/bootstrap.min.js')
     script(src='/vendor/lodash/lodash.min.js')
