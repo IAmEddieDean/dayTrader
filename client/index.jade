@@ -34,10 +34,10 @@ html(lang='en', ng-app='day-trader')
               
               form.navbar-form.navbar-left(role='search')
                 .form-group
-                  input.form-control(type='text', placeholder='Technology', ng-model='portfolio.name')
-                  button.btn.btn-default(type='submit', ng-click='addPortfolio()') Add Portfolio
-                  input.form-control(type='text', placeholder='Symbol', ng-model='portfolio.stock.symbol')
-                  input.form-control(type='number', ng-model='portfolio.stock.amount')
+                  //- input.form-control(type='text', placeholder='Technology', ng-model='portfolio.name')
+                  //- button.btn.btn-default(type='submit', ng-click='addPortfolio()') Add Portfolio
+                  input.form-control(type='text', placeholder='Symbol', ng-model='stock.symbol')
+                  input.form-control(type='number', ng-model='stock.amount')
 
                   ul.nav.navbar-nav.navbar-right
                     .form-group
@@ -49,20 +49,70 @@ html(lang='en', ng-app='day-trader')
                         option(value="pharma") Pharmaceuticals
                       button.btn.btn-default(type='submit', ng-click='buyShares()') Buy
       .row
-        .col-md-4(ng-repeat='portfolio in portfolios')
+        .col-md-4
           table.table.table-striped
             thead
-              th Symbol
-              th Position
-              th Qty:
-              th Sell
+              tr
+                th(col-span='4')
+                  h3 Technology
+              tr
+                th Symbol
+                th Position
+                th Qty:
+                th Sell
             tbody
-              tr(ng-repeat='stock in portfolio')
+              tr(ng-repeat='stock in technology')
                 td {{stock.symbol}}
-                td {{stock.value}}
-                td {{stock.shares}}
-                td: button.btn.btn-danger.btn-xs(ng-click='sellShares(stock, {{portfolio.name}})') Sell
-    script(src='/vendor/jquery/dist/jquery.min.js')
+                td {{stock.price * stock.amount | currency}}
+                td {{stock.amount}}
+                td: button.btn.btn-danger.btn-xs(ng-click='sellShares(stock, technology)') Sell
+            tfoot
+              tr
+                td Balance
+                td(col-span='3'){{portTotal('technology') | currency}}
+        .col-md-4
+          table.table.table-striped
+            thead
+              tr
+                th(col-span='4')
+                  h3 Cereal
+              tr
+                th Symbol
+                th Position
+                th Qty:
+                th Sell
+            tbody
+              tr(ng-repeat='stock in cereal')
+                td {{stock.symbol}}
+                td {{stock.price * stock.amount | currency}}
+                td {{stock.amount}}
+                td: button.btn.btn-danger.btn-xs(ng-click='sellShares(stock, cereal)') Sell
+            tfoot
+              tr
+                td Balance
+                td(col-span='3'){{portTotal('cereal') | currency}}
+        .col-md-4
+          table.table.table-striped
+            thead
+              tr
+                th(col-span='4')
+                  h3 Pharmaceuticals
+              tr
+                th Symbol
+                th Position
+                th Qty:
+                th Sell
+            tbody
+              tr(ng-repeat='stock in pharma')
+                td {{stock.symbol}}
+                td {{stock.price * stock.amount | currency}}
+                td {{stock.amount}}
+                td: button.btn.btn-danger.btn-xs(ng-click='sellShares(stock, pharma)') Sell
+            tfoot
+              tr
+                td Balance
+                td(col-span='3') {{portTotal('pharma') | currency}}
+  script(src='/vendor/jquery/dist/jquery.min.js')
     script(src='/vendor/bootstrap/dist/js/bootstrap.min.js')
     script(src='/vendor/lodash/lodash.min.js')
     script(src='/vendor/firebase/firebase.js')
