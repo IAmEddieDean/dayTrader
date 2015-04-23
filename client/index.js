@@ -5,15 +5,15 @@ angular.module('day-trader', ['firebase'])
   $rootScope.fbRoot = new $window.Firebase('https://daytrippin.firebaseio.com/');
 }])
 .controller('master', ['$scope', '$firebaseObject', '$firebaseArray', '$http', function($scope, $firebaseObject, $firebaseArray, $http){
-
+  $scope.buffalos = [{'name':'buf1'}, {'name':'buf2'}];
   var fbUser = $scope.fbRoot.child('user');
   var afUser = $firebaseObject(fbUser);
   $scope.user = afUser;
   
-  var fbPortfolio = $scope.fbRoot.child('portfolio');
-  var afPortfolio = $firebaseArray(fbPortfolio);
-  $scope.portfolio = afPortfolio;
-
+  var fbPortfolios = $scope.fbRoot.child('portfolios');
+  var afPortfolios = $firebaseArray(fbPortfolios);
+  $scope.portfolios = afPortfolios;
+  
   $scope.addUser = function(){
     $scope.user.$save();
     console.log($scope.user);
@@ -23,11 +23,21 @@ angular.module('day-trader', ['firebase'])
     $scope.setupBar = true;
   };
   $scope.addPortfolio = function(){
-    $scope.portfolio.$save();
+    $scope.portfolios.$add($scope.portfolio);
+    // $scope.portfolio.name.$save();
     
   };
-
-  $http.jsonp('http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=AAPL&callback=JSON_CALLBACK').then(function(response){
-    console.log(response);
-  });
+  $scope.buyShares = function(){
+    var symbol = $scope.portfolio.stock.symbol;
+    var shares = $scope.portfolio.stock.amount;
+    $http.jsonp('http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol='+ symbol +'&callback=JSON_CALLBACK').then(function(response){
+      if((response.data.LastPrice * shares) < $scope.user.capital){
+        $scope.user.capital -= (response.data.LastPrice * shares);
+        console.log($scope.user.capital);
+      }else{
+        alert('Not Enough Funds');
+      }
+    });
+  };
+  
 }]);
